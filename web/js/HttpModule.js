@@ -41,7 +41,8 @@ class HttpModule {
                 .then(httpModule.status)
                 .then(httpModule.json)
                 .catch((ex) => console.log("Fetch Exception", ex));
-    };
+    }
+    ;
             queryParams(params) {
         return Object.keys(params)
                 .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))

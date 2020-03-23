@@ -40,6 +40,7 @@ import {httpModule} from './HttpModule.js';
                         "lastname": lastname,
                         "email": email,
                         "money": money,
+                        "city": city,
                         "street": street,
                         "house": house,
                         "room": room,
