@@ -8,7 +8,7 @@ import {httpModule} from './HttpModule.js';
                   <h5 class="card-title w-100 text-center">Register user</h5>
                   <p class="card-text d-flex justify-content-end">Username: <input class="w-50 ml-3" type="text" id="firstname"></p>
                   <p class="card-text d-flex justify-content-end">Last name of the user: <input class="w-50 ml-3" type="text" id="lastname"></p>
-                  <p class="card-text d-flex justify-content-end">user email: <input class="w-50 ml-3" type="email" id="email"></p>
+                  <p class="card-text d-flex justify-content-end">User email: <input class="w-50 ml-3" type="email" id="email"></p>
                   <p class="card-text d-flex justify-content-end">Wallet: <input class="w-50 ml-3" type="text" id="money"></p>
                   <p class="card-text d-flex justify-content-end">Current city: <input class="w-50 ml-3" type="text" id="city"></p>
                   <p class="card-text d-flex justify-content-end">Street: <input class="w-50 ml-3" type="text" id="street"></p>
@@ -47,18 +47,17 @@ import {httpModule} from './HttpModule.js';
                         "login": login,
                         "password": password,
                 }
-        httpModule.http({url:'createUser', options:{method:'POST', data: user}})
+        httpModule.http('createUser', 'POST', user)
                 .then(function(response){
-                if (response === null || response === 'undefined'){
-                document.getElementById('info').innerHTML = 'Пользователя добавить неудалось';
+                if (response === null || response === undefined){
+                document.getElementById('info').innerHTML = 'User failed to add';
                         userModule.printRegistrationForm();
                 }
-                if (response.actionStatus !== 'true'){
-                document.getElementById('info').innerHTML = 'Пользователя добавить неудалось';
+                if (response.actionStatus === 'false'){
+                document.getElementById('info').innerHTML = 'User failed to add';
                         userModule.printRegistrationForm();
                 }
-                // запрос успешен
-                document.getElementById('info').innerHTML = 'Новый пользователь добавлен';
+                document.getElementById('info').innerHTML = 'New user added';
                         document.getElementById('content').innerHTML = '';
                 })
 
@@ -67,4 +66,3 @@ import {httpModule} from './HttpModule.js';
         }
 let userModule = new UserModule();
         export {userModule}
-

@@ -10,49 +10,33 @@ class HttpModule {
     json(response) {
         return response.json()
     }
-    //формирует options для fetch
-    fetchOpts(opt) {
-        if (opt.method === 'POST') {
-            return {
-                method: opt.method,
+    http(url, method, data) {
+        let options = {};
+        if (method === 'POST') {
+            options = {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 credentials: 'include',
-                body: JSON.stringify(opt.data)
-            };
-        } else {
-            return {
-                method: opt.method,
+                body: JSON.stringify(data)
+            }
+        } else if (method === 'GET') {
+            options = {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 credentials: 'include'
-            };
+            }
         }
-    }
-    ;
-            http(httpOptions) {
-        if (httpOptions.params != null) {
-            httpOptions.url = httpOptions.url + '?' + httpModule.queryParams(httpOptions.params);
-        }
-        let options = httpModule.fetchOpts(httpOptions.options);
-        return fetch(httpOptions.url, options)
+        return fetch(url, options)
                 .then(httpModule.status)
                 .then(httpModule.json)
                 .catch((ex) => console.log("Fetch Exception", ex));
     }
     ;
-            queryParams(params) {
-        return Object.keys(params)
-                .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-                .join('&');
-    }
-
 }
-
 let httpModule = new HttpModule();
 
 export {httpModule};
-
-
