@@ -41,6 +41,7 @@ class AuthModule {
                     document.getElementById('info').innerHTML = 'You are logged in as ' + response.user.login;
                     document.getElementById('content').innerHTML = ' ';
                     sessionStorage.setItem('user', JSON.stringify(response.user));
+                    authModule.toogleVisibleMenus();
                 });
     }
     sysLogout() {
@@ -56,8 +57,23 @@ class AuthModule {
                         if (sessionStorage.getItem('user') !== null) {
                             sessionStorage.removeItem('user');
                         }
+                        authModule.toogleVisibleMenus();
                     }
                 });
+                
+    }
+    toogleVisibleMenus(){
+      if(sessionStorage.getItem('user') === null){
+        document.getElementById('sysout').style.display = 'none';
+        document.getElementById('enter-menu').style.display = 'block';
+        document.getElementById('printListBooksForm').style.display = 'none';
+        document.getElementById('printNewBookForm').style.display = 'none';
+      }else{
+        document.getElementById('sysout').style.display = 'block';
+        document.getElementById('enter-menu').style.display = 'none';
+        document.getElementById('printListBooksForm').style.display = 'block';
+        document.getElementById('printNewBookForm').style.display = 'block';
+      }
     }
 
 }
