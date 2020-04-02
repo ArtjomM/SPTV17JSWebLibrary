@@ -1,4 +1,3 @@
-
 import {authModule} from './AuthModule.js';
 
 document.getElementById('enter-menu').onclick = function () {
@@ -7,6 +6,7 @@ document.getElementById('enter-menu').onclick = function () {
 }
 document.getElementById('sysout').onclick = function () {
     toogleMenuActive('sysout');
+    authModule.sysLogout();
 }
 document.getElementById('active').onclick = function () {
     toogleMenuActive('active');

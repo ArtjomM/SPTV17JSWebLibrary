@@ -10,7 +10,7 @@ class AuthModule {
                   <div class="card-header text-center">Enter login and password</div>
                   <div class="card-body">
                     <p class="card-text d-flex justify-content-between">Login: <input class="ml-2" type="text" id="login"></p>
-                    <p class="card-text d-flex justify-content-between">Password: <input class="ml-2" type="text" id="password"></p>
+                    <p class="card-text d-flex justify-content-between">Password: <input class="ml-2" type="password" id="password"></p>
                     <p class="card-text"><button class="btn btn-primary w-100 rounded-pill" type="button" id="btnEnter">Sign in</button</p>
                   </div>
                   <p class="w-100 text-center">Don't have an account?<br><a id="registration" href="#">Register</a></p>
@@ -39,7 +39,24 @@ class AuthModule {
                         return;
                     }
                     document.getElementById('info').innerHTML = 'You are logged in as ' + response.user.login;
+                    document.getElementById('content').innerHTML = ' ';
                     sessionStorage.setItem('user', JSON.stringify(response.user));
+                });
+    }
+    sysLogout() {
+        httpModule.http('logout', 'GET')
+                .then(function (response) {
+                    if (response === null || response === undefined) {
+                        document.getElementById("info").innerHTML = 'Server Error';
+                        return;
+                    }
+                    if (response.authStatus === 'false') {
+                        document.getElementById('info').innerHTML = 'You are logged out';
+                        document.getElementById('content').innerHTML = ' ';
+                        if (sessionStorage.getItem('user') !== null) {
+                            sessionStorage.removeItem('user');
+                        }
+                    }
                 });
     }
 
