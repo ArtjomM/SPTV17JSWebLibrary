@@ -5,7 +5,7 @@
  */
 package session;
 
-import entity.User;
+import entity.Book;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author artjo
  */
 @Stateless
-public class UserFacade extends AbstractFacade<User> {
+public class BookFacade extends AbstractFacade<Book> {
 
     @PersistenceContext(unitName = "SPTV17JSWebLibraryPU")
     private EntityManager em;
@@ -25,18 +25,7 @@ public class UserFacade extends AbstractFacade<User> {
         return em;
     }
 
-    public UserFacade() {
-        super(User.class);
+    public BookFacade() {
+        super(Book.class);
     }
-
-    public User findByLogin(String login) {
-        try {
-            return (User) em.createQuery("SELECT u FROM User u WHERE u.login = :login")
-                    .setParameter("login", login)
-                    .getSingleResult();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
 }
