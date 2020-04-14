@@ -1,11 +1,13 @@
 package servlets;
 
+import entity.Book;
 import entity.Person;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Calendar;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import jsonbuilders.JsonUserBuilder;
+import session.BookFacade;
 import session.PersonFacade;
 import session.UserFacade;
 import util.EncryptPass;
@@ -36,6 +39,8 @@ public class LoginController extends HttpServlet {
     private PersonFacade personFacade;
     @EJB
     private UserFacade userFacade;
+    @EJB
+    private BookFacade bookFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -192,6 +197,51 @@ public class LoginController extends HttpServlet {
                     json = writer.toString();
                 }
                 break;
+                
+                case "/createBook":
+                    jsonReader = Json.createReader(request.getReader());
+                    jsonObject = jsonReader.readObject();
+                    String name = jsonObject.getString("name");
+                    String author = jsonObject.getString("author");
+                    String publishedYear = jsonObject.getString("publishedYear");
+                    String quantity = jsonObject.getString("quantity");
+                    String price = jsonObject.getString("price");
+                    if (null == name || "".equals(name)
+                            || null == author || "".equals(author)
+                            || null == publishedYear || "".equals(publishedYear)
+                            || null == quantity || "".equals(quantity)
+                            || null == price || "".equals(price)) {
+                        job.add("actionStatus", "false")
+                                .add("user", "null")
+                                .add("authStatus", "false")
+                                .add("data", "null");
+                        try (Writer writer = new StringWriter()) {
+                            Json.createWriter(writer).write(job.build());
+                            json = writer.toString();
+                        }
+                        break;
+                    }
+                    Book book = new Book(
+                            name,
+                            author,
+                            publishedYear,
+                            Integer.parseInt(quantity),
+                            Integer.parseInt(price),
+                            Calendar.getInstance().getTime(),
+                            true
+                    );
+                    bookFacade.create(book);
+
+                    job.add("actionStatus", "true")
+                            .add("user", "null")
+                            .add("authStatus", "true")
+                            .add("data", "null");
+                    try (Writer writer = new StringWriter()) {
+                        Json.createWriter(writer).write(job.build());
+                        json = writer.toString();
+                    }
+
+                    break;
         }
         // Отлавливаем json переменную, проверяем содержание 
         // и если оно есть, отправляем клиенту
