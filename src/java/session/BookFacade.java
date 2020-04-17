@@ -28,4 +28,5 @@ public class BookFacade extends AbstractFacade<Book> {
     public BookFacade() {
         super(Book.class);
     }
+    
 }

@@ -8,10 +8,13 @@ package entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 
 /**
@@ -27,26 +30,35 @@ public class Book implements Serializable {
     private String name;
     private String author;
     private String publishedYear;
-    private Integer quantity;
     private Integer price;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateAdded;
     private boolean active;
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    private byte[] textBookInBytes;
+    private String coverUrl;
 
     public Book() {
     }
 
-public Book(String name, String author, String publishedYear, Integer quantity, Integer price, Date dateAdded, boolean active) {
+    public Book(String name,
+            String author,
+            String publishedYear,
+            Integer price,
+            Date dateAdded,
+            boolean active,
+            byte[] textBookInBytes,
+            String coverUrl) {
         this.name = name;
         this.author = author;
         this.publishedYear = publishedYear;
-        this.quantity = quantity;
         this.price = price;
         this.dateAdded = dateAdded;
         this.active = active;
+        this.textBookInBytes = textBookInBytes;
+        this.coverUrl = coverUrl;
     }
-
-
 
     public Long getId() {
         return id;
@@ -80,14 +92,6 @@ public Book(String name, String author, String publishedYear, Integer quantity, 
         this.publishedYear = publishedYear;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
     public Integer getPrice() {
         return price;
     }
@@ -119,7 +123,6 @@ public Book(String name, String author, String publishedYear, Integer quantity, 
         hash = 29 * hash + Objects.hashCode(this.name);
         hash = 29 * hash + Objects.hashCode(this.author);
         hash = 29 * hash + Objects.hashCode(this.publishedYear);
-        hash = 29 * hash + Objects.hashCode(this.quantity);
         hash = 29 * hash + Objects.hashCode(this.price);
         hash = 29 * hash + Objects.hashCode(this.dateAdded);
         hash = 29 * hash + (this.active ? 1 : 0);
@@ -153,9 +156,6 @@ public Book(String name, String author, String publishedYear, Integer quantity, 
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.quantity, other.quantity)) {
-            return false;
-        }
         if (!Objects.equals(this.price, other.price)) {
             return false;
         }
@@ -167,9 +167,32 @@ public Book(String name, String author, String publishedYear, Integer quantity, 
 
     @Override
     public String toString() {
-        return "Book{" + "id=" + id + ", name=" + name + ", author=" + author + ", publishedYear=" + publishedYear + ", quantity=" + quantity + ", price=" + price + ", dateAdded=" + dateAdded + ", active=" + active + '}';
+        return "Book{" + "id=" + id + ", name=" + name + ", author=" + author + ", publishedYear=" + publishedYear + ", price=" + price + ", dateAdded=" + dateAdded + ", active=" + active + '}';
     }
 
-    
+    public byte[] getTextBookInBytes() {
+        return textBookInBytes;
+    }
+
+    public void setTextBookInBytes(byte[] textBookInBytes) {
+        this.textBookInBytes = textBookInBytes;
+    }
+
+    public String getTextBookLimit(int countByte) {
+        String fullText = new String(getTextBookInBytes());
+        return fullText.substring(0, countByte);
+    }
+
+    public String getTextBookFull() {
+        return new String(getTextBookInBytes());
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
 
 }
