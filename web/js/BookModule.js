@@ -1,11 +1,11 @@
 import {httpModule} from './HttpModule.js';
 import {userModule} from './UserModule.js';
 
-class BookModule{
-    printNewBookForm(){
-      document.getElementById('info').innerHTML='&nbsp;';
-        document.getElementById('content').innerHTML = 
-             `<div class="row mt-5">
+class BookModule {
+    printNewBookForm() {
+        document.getElementById('info').innerHTML = '&nbsp;';
+        document.getElementById('content').innerHTML =
+                `<div class="row mt-5">
                  <div class="col-sm-6 m-auto">
                    <div class="card">
                      <div class="card-body">
@@ -32,76 +32,76 @@ class BookModule{
                    </div>
                  </div>
               </div>`;
-          document.getElementById('btnAddBook').addEventListener('click', bookModule.createBook);
-        }
-        
-    createBook(){
+        document.getElementById('btnAddBook').addEventListener('click', bookModule.createBook);
+    }
+
+    createBook() {
         let name = document.getElementById('name').value;
         let author = document.getElementById('author').value;
         let publishedYear = document.getElementById('publishedYear').value;
         let coverUrl = document.getElementById('coverUrl').value;
         let price = document.getElementById('price').value;
         let textBook = document.getElementById('textBook').value;
-        
-        if(name === null || name === undefined
-              || author === null || author === undefined
-              || publishedYear === null || publishedYear === undefined
-              || coverUrl === null || coverUrl === undefined
-              || price === null || price === undefined
-              || textBook === null || textBook === undefined){
-          document.getElementById('info').innerHTML='Fill in all the fields';
-          return;
+
+        if (name === null || name === undefined
+                || author === null || author === undefined
+                || publishedYear === null || publishedYear === undefined
+                || coverUrl === null || coverUrl === undefined
+                || price === null || price === undefined
+                || textBook === null || textBook === undefined) {
+            document.getElementById('info').innerHTML = 'Fill in all the fields';
+            return;
         }
         let newBook = {
-          "name": name,
-          "author": author,
-          "publishedYear": publishedYear,
-          "coverUrl": coverUrl,
-          "price": price,
-          "textBook": textBook,
+            "name": name,
+            "author": author,
+            "publishedYear": publishedYear,
+            "coverUrl": coverUrl,
+            "price": price,
+            "textBook": textBook,
         }
-        httpModule.http('createBook','POST',newBook)
-                .then(function(response){
-                  if(response === null || response === undefined){
-                    document.getElementById('info').innerHTML='Error on server';
-                    return;
-                  }
-                  if(response.authStatus === 'false'){
-                    document.getElementById('info').innerHTML='Sign in';
-                    return;
-                  }
-                  if(response.actionStatus === 'false'){
-                    document.getElementById('info').innerHTML='';
-                    return;
-                  }
-                  document.getElementById('info').innerHTML='Book added';
-                  bookModule.printNewBookForm();
+        httpModule.http('createBook', 'POST', newBook)
+                .then(function (response) {
+                    if (response === null || response === undefined) {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    if (response.authStatus === 'false') {
+                        document.getElementById('info').innerHTML = 'Sign in';
+                        return;
+                    }
+                    if (response.actionStatus === 'false') {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                        document.getElementById('info').innerHTML = 'Book added';
+                        bookModule.printNewBookForm();
                 });
     }
-    printListBook(){
-      httpModule.http('listBooks','GET')
-                .then(function(response){
-                  if(response === null || response === undefined){
-                    document.getElementById('info').innerHTML='Error on server';
-                    return;
-                  }
-                  if(response.authStatus === 'false'){
-                    document.getElementById('info').innerHTML='Sign in';
-                    return;
-                  }
-                  if(response.actionStatus === 'false'){
-                    document.getElementById('info').innerHTML='';
-                    return;
-                  }
-                                
-                  document.getElementById('content').innerHTML =
-                          `<h2 class="w-100 text-center">Book list</h2>
+    printListBook() {
+        httpModule.http('listBooks', 'GET')
+                .then(function (response) {
+                    if (response === null || response === undefined) {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    if (response.authStatus === 'false') {
+                        document.getElementById('info').innerHTML = 'Sign in';
+                        return;
+                    }
+                    if (response.actionStatus === 'false') {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+
+                    document.getElementById('content').innerHTML =
+                            `<h2 class="w-100 text-center">Book list</h2>
                            <div id="boxBooks" class="row row-cols-1 row-cols-md-3 mt-4"></div>`;
-                  let boxBooks = document.getElementById('boxBooks');
-                  let books = response.data;
-                  for(let i=0;i< books.length;i++){
-                    boxBooks.insertAdjacentHTML('afterbegin', 
-                        `<div class="col mb-4">
+                    let boxBooks = document.getElementById('boxBooks');
+                    let books = response.data;
+                    for (let i = 0; i < books.length; i++) {
+                        boxBooks.insertAdjacentHTML('afterbegin',
+                                `<div class="col mb-4">
                           <div class="card h-100" style="width: 18em;">
                             <img src="${books[i].coverUrl}" class="card-img-top" alt="..." >
                             <div class="card-body">
@@ -115,70 +115,70 @@ class BookModule{
                             </div>
                           </div>
                         </div>`
-                    );
-                    document.getElementById('btnToRead'+books[i].id).onclick=function(){
-                      bookModule.readBook(books[i].id);
+                                );
+                        document.getElementById('btnToRead' + books[i].id).onclick = function () {
+                            bookModule.readBook(books[i].id);
+                        }
+                        document.getElementById('btnToBuy' + books[i].id).onclick = function () {
+                            bookModule.buyBook(books[i].id);
+                        }
                     }
-                    document.getElementById('btnToBuy'+books[i].id).onclick=function(){
-                      bookModule.buyBook(books[i].id);
-                    }
-                  }
                 });
     }
-    readBook(bookId){
-      let url = 'readBook?bookId='+bookId;
-      httpModule.http(url,'GET')
-                .then(function(response){
-                  if(response === null || response === undefined){
-                    document.getElementById('info').innerHTML='Error on server';
-                    return;
-                  }
-                  if(response.authStatus === 'false'){
-                    document.getElementById('info').innerHTML='Sign in';
-                    return;
-                  }
-                  if(response.actionStatus === 'false'){
-                    document.getElementById('info').innerHTML='';
-                    return;
-                  }
-                  document.getElementById('content').innerHTML=
-                          `<div class="text-justify mt-5">
+    readBook(bookId) {
+        let url = 'readBook?bookId=' + bookId;
+        httpModule.http(url, 'GET')
+                .then(function (response) {
+                    if (response === null || response === undefined) {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    if (response.authStatus === 'false') {
+                        document.getElementById('info').innerHTML = 'Sign in';
+                        return;
+                    }
+                    if (response.actionStatus === 'false') {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    document.getElementById('content').innerHTML =
+                            `<div class="text-justify mt-5">
                            (Fact sheet)<br>       
                              ${response.data}...
                             <br> 
                             ( end of fact sheet )<br>
-                            To continue reading you must <a id="buyBook" href="#">Buy</a> книгу
+                            To continue reading you must <a id="buyBook" href="#">Buy</a> book
                           </div>`;
-                  document.getElementById('buyBook').onclick = function(){
-                    bookModule.buyBook(bookId);
-                  }
+                    document.getElementById('buyBook').onclick = function () {
+                        bookModule.buyBook(bookId);
+                    }
                 });
-                
-  }
-    buyBook(bookId){
-      let url = 'buyBook?bookId='+bookId;
-      httpModule.http(url,'GET')
-                .then(function(response){
-                  if(response === null || response === undefined){
-                    document.getElementById('info').innerHTML='Error on server';
-                    return;
-                  }
-                  if(response.authStatus === 'false'){
-                    document.getElementById('info').innerHTML='Sign in';
-                    return;
-                  }
-                  if(response.actionStatus === 'false'){
-                    document.getElementById('info').innerHTML='';
-                    return;
-                  }
-                  sessionStorage.setItem('user',response.user);
-                  document.getElementById('content').innerHTML=
-                          `<div class="text-justify mt-5">
+
+    }
+    buyBook(bookId) {
+        let url = 'buyBook?bookId=' + bookId;
+        httpModule.http(url, 'GET')
+                .then(function (response) {
+                    if (response === null || response === undefined) {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    if (response.authStatus === 'false') {
+                        document.getElementById('info').innerHTML = 'Sign in';
+                        return;
+                    }
+                    if (response.actionStatus === 'false') {
+                        document.getElementById('info').innerHTML = '';
+                        return;
+                    }
+                    sessionStorage.setItem('user', response.user);
+                    document.getElementById('content').innerHTML =
+                            `<div class="text-justify mt-5">
                              ${response.data}
                           </div>`;
                 });
     }
-    
+
 }
 let bookModule = new BookModule();
 export {bookModule};

@@ -51,14 +51,14 @@ class UserModule{
           httpModule.http('createUser', 'POST', user)
                   .then(function(response){
                       if(response === null || response === undefined){
-                          document.getElementById('info').innerHTML = 'Пользователя добавить неудалось';
+                          document.getElementById('info').innerHTML = 'User failed to add';
                           userModule.printRegistrationForm(); 
                       }
                       if(response.actionStatus === 'false'){
-                          document.getElementById('info').innerHTML = 'Пользователя добавить неудалось';
+                          document.getElementById('info').innerHTML = 'User failed to add';
                           userModule.printRegistrationForm(); 
                       }
-                      document.getElementById('info').innerHTML = 'Новый пользователь добавлен';
+                      document.getElementById('info').innerHTML = 'New user added';
                       document.getElementById('content').innerHTML = '';
                   })
          

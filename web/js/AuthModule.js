@@ -17,15 +17,12 @@ class AuthModule{
                   <p class="w-100 text-center">No account?<br><a id="registration" href="#">Register</a></p>
                </div>
              </div>;`;
-        //старый способ навешивания события на элемент
         document.getElementById('btnEnter').onclick = function(){
             authModule.auth();
         }
-        // новый, предпочтительный способ навешивания события на элемент
         document.getElementById('registration').addEventListener('click', userModule.printRegistrationForm);
     }
     auth(){
-        //console.log('отработал метода authModule.auth()');
         let login = document.getElementById('login').value;
         let password = document.getElementById('password').value;
         let credential = {

@@ -165,7 +165,6 @@ public class UserController extends HttpServlet {
                 bookId = request.getParameter("bookId");
                 book = bookFacade.find(Long.parseLong(bookId));
                 Person person = personFacade.find(user.getPerson().getId());
-                //--- Проверка на достаточность денег у пуользователя ----
                 if(person.getMoney()-book.getPrice() < 0){
                     job.add("actionStatus", "false")
                             .add("user","null")
